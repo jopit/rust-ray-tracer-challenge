@@ -145,3 +145,39 @@ fn cross_product_of_two_vectors() {
     assert_eq!(a.cross(b), vector(-1, 2, -1));
     assert_eq!(b.cross(a), vector(1, -2, 1));
 }
+
+#[test]
+fn colors_are_red_green_blue_tuples() {
+    let c = color(-0.5, 0.4, 1.7);
+    assert_eq!(c.red, -0.5);
+    assert_eq!(c.green, 0.4);
+    assert_eq!(c.blue, 1.7);
+}
+
+#[test]
+fn adding_colors() {
+    let c1 = color(0.9, 0.6, 0.75);
+    let c2 = color(0.7, 0.1, 0.25);
+    assert_eq!(c1 + c2, color(1.6, 0.7, 1.0));
+}
+
+#[test]
+fn substracting_colors() {
+    let c1 = color(0.9, 0.6, 0.75);
+    let c2 = color(0.7, 0.1, 0.25);
+    assert_eq!(c1 - c2, color(0.2, 0.5, 0.5));
+}
+
+#[test]
+fn multiplying_a_color_by_a_scalar() {
+    let c = color(0.2, 0.3, 0.4);
+    assert_eq!(c * 2, color(0.4, 0.6, 0.8));
+}
+
+#[test]
+fn multiplying_colors() {
+    let c1 = color(1, 0.2, 0.4);
+    let c2 = color(0.9, 1, 0.1);
+    assert_eq!(c1 * c2, color(0.9, 0.2, 0.04));
+    assert_eq!(c1.red, 1.0);
+}

@@ -1,3 +1,9 @@
+mod canvas;
+pub use crate::canvas::{canvas, Canvas};
+
+mod color;
+pub use crate::color::{color, Color};
+
 mod point;
 pub use crate::point::{point, Point};
 
