@@ -12,8 +12,8 @@ pub struct Canvas {
 pub fn canvas(width: usize, height: usize) -> Canvas {
     Canvas {
         data: vec![BLACK; width * height],
-        width: width,
-        height: height,
+        width,
+        height,
     }
 }
 

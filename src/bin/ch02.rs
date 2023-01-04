@@ -23,7 +23,7 @@ fn main() {
 
     let mut p = Projectile {
         position: start,
-        velocity: velocity,
+        velocity,
     };
     let gravity = vector(0, -0.1, 0);
     let wind = vector(-0.01, 0, 0);
@@ -38,13 +38,13 @@ fn main() {
         let y = canvas.height() - (p.position.y.round() as usize);
         if x < canvas.width() || y < canvas.height() {
             canvas.set(x, y, color);
-            if x as i32 - 1 >= 0 {
+            if x as i32 > 0 {
                 canvas.set(x - 1, y, color);
             }
             if x + 1 < canvas.width() {
                 canvas.set(x + 1, y, color);
             }
-            if y as i32 - 1 >= 0 {
+            if y as i32 > 0 {
                 canvas.set(x, y - 1, color);
             }
             if y + 1 < canvas.height() {

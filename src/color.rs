@@ -27,20 +27,10 @@ pub fn color<R: Into<f64>, G: Into<f64>, B: Into<f64>>(red: R, green: G, blue: B
 
 impl Color {
     pub fn to_rgb(&self) -> Rgb<u8> {
-        fn clamp(val: f64) -> f64 {
-            if val < 0.0 {
-                0.0
-            } else if val > 1.0 {
-                1.0
-            } else {
-                val
-            }
-        }
-
         Rgb([
-            (clamp(self.red) * 255.0) as u8,
-            (clamp(self.green) * 255.0) as u8,
-            (clamp(self.blue) * 255.0) as u8,
+            (self.red.clamp(0.0, 1.0) * 255.0) as u8,
+            (self.green.clamp(0.0, 1.0) * 255.0) as u8,
+            (self.blue.clamp(0.0, 1.0) * 255.0) as u8,
         ])
     }
 }
