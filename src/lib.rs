@@ -4,6 +4,9 @@ pub use crate::canvas::{canvas, Canvas};
 mod color;
 pub use crate::color::{color, Color};
 
+mod matrix;
+pub use crate::matrix::{matrix, matrix_sized, Matrix};
+
 mod point;
 pub use crate::point::{point, Point};
 
