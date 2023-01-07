@@ -5,7 +5,9 @@ mod color;
 pub use crate::color::{color, Color};
 
 mod matrix;
-pub use crate::matrix::{matrix, matrix_sized, Matrix};
+pub use crate::matrix::{
+    matrix, matrix_sized, rotate_x, rotate_y, rotate_z, scale, scale_u, shear, translate, Matrix,
+};
 
 mod point;
 pub use crate::point::{point, Point};

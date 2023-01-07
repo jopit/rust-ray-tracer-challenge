@@ -23,6 +23,106 @@ pub fn matrix_sized(size: usize) -> Matrix {
     }
 }
 
+pub fn translate<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(x: T1, y: T2, z: T3) -> Matrix {
+    Matrix {
+        data: [
+            [1.0, 0.0, 0.0, x.into()],
+            [0.0, 1.0, 0.0, y.into()],
+            [0.0, 0.0, 1.0, z.into()],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+        size: 4,
+    }
+}
+
+pub fn scale<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(x: T1, y: T2, z: T3) -> Matrix {
+    Matrix {
+        data: [
+            [x.into(), 0.0, 0.0, 0.0],
+            [0.0, y.into(), 0.0, 0.0],
+            [0.0, 0.0, z.into(), 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+        size: 4,
+    }
+}
+
+pub fn scale_u<T: Into<f64>>(s: T) -> Matrix {
+    let u = s.into();
+    scale(u, u, u)
+}
+
+pub fn rotate_x<T: Into<f64>>(radians: T) -> Matrix {
+    let r = radians.into();
+    let cosr = r.cos();
+    let sinr = r.sin();
+    Matrix {
+        data: [
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, cosr, -sinr, 0.0],
+            [0.0, sinr, cosr, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+        size: 4,
+    }
+}
+
+pub fn rotate_y<T: Into<f64>>(radians: T) -> Matrix {
+    let r = radians.into();
+    let cosr = r.cos();
+    let sinr = r.sin();
+    Matrix {
+        data: [
+            [cosr, 0.0, sinr, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [-sinr, 0.0, cosr, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+        size: 4,
+    }
+}
+
+pub fn rotate_z<T: Into<f64>>(radians: T) -> Matrix {
+    let r = radians.into();
+    let cosr = r.cos();
+    let sinr = r.sin();
+    Matrix {
+        data: [
+            [cosr, -sinr, 0.0, 0.0],
+            [sinr, cosr, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+        size: 4,
+    }
+}
+
+pub fn shear<
+    T1: Into<f64>,
+    T2: Into<f64>,
+    T3: Into<f64>,
+    T4: Into<f64>,
+    T5: Into<f64>,
+    T6: Into<f64>,
+>(
+    xy: T1,
+    xz: T2,
+    yx: T3,
+    yz: T4,
+    zx: T5,
+    zy: T6,
+) -> Matrix {
+    Matrix {
+        data: [
+            [1.0, xy.into(), xz.into(), 0.0],
+            [yx.into(), 1.0, yz.into(), 0.0],
+            [zx.into(), zy.into(), 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+        size: 4,
+    }
+}
+
 impl Matrix {
     pub fn transpose(&self) -> Matrix {
         let mut result = matrix_sized(self.size);
@@ -102,6 +202,59 @@ impl Matrix {
         }
         m2
     }
+
+    pub fn translate<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(
+        &self,
+        x: T1,
+        y: T2,
+        z: T3,
+    ) -> Matrix {
+        translate(x, y, z) * *self
+    }
+
+    pub fn scale<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(
+        &self,
+        x: T1,
+        y: T2,
+        z: T3,
+    ) -> Matrix {
+        scale(x, y, z) * *self
+    }
+
+    pub fn scale_u<T: Into<f64>>(&self, s: T) -> Matrix {
+        scale_u(s) * *self
+    }
+
+    pub fn rotate_x<T: Into<f64>>(&self, radians: T) -> Matrix {
+        rotate_x(radians) * *self
+    }
+
+    pub fn rotate_y<T: Into<f64>>(&self, radians: T) -> Matrix {
+        rotate_y(radians) * *self
+    }
+
+    pub fn rotate_z<T: Into<f64>>(&self, radians: T) -> Matrix {
+        rotate_z(radians) * *self
+    }
+
+    pub fn shear<
+        T1: Into<f64>,
+        T2: Into<f64>,
+        T3: Into<f64>,
+        T4: Into<f64>,
+        T5: Into<f64>,
+        T6: Into<f64>,
+    >(
+        &self,
+        xy: T1,
+        xz: T2,
+        yx: T3,
+        yz: T4,
+        zx: T5,
+        zy: T6,
+    ) -> Matrix {
+        shear(xy, xz, yx, yz, zx, zy) * *self
+    }
 }
 
 impl Index<usize> for Matrix {
@@ -171,7 +324,7 @@ impl Mul<Point> for Matrix {
     type Output = Point;
 
     fn mul(self, rhs: Point) -> Self::Output {
-        assert!(self.size == 4, "can only multiply a 4x4 matrix by a vector",);
+        assert!(self.size == 4, "can only multiply a 4x4 matrix by a point",);
 
         let dot = |row: [f64; 4]| row[0] * rhs.x + row[1] * rhs.y + row[2] * rhs.z + row[3];
         point(dot(self.data[0]), dot(self.data[1]), dot(self.data[2]))
