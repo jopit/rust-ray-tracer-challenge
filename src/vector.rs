@@ -1,21 +1,46 @@
-use crate::{feq, Point};
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use crate::{feq, point, Point, Tuple};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vector {
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
+    x: f64,
+    y: f64,
+    z: f64,
+}
+
+pub fn new<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(x: T1, y: T2, z: T3) -> Vector {
+    Vector {
+        x: x.into(),
+        y: y.into(),
+        z: z.into(),
+    }
+}
+
+impl Tuple for Vector {
+    fn x(&self) -> f64 {
+        self.x
+    }
+
+    fn y(&self) -> f64 {
+        self.y
+    }
+
+    fn z(&self) -> f64 {
+        self.z
+    }
 }
 
 impl Vector {
-    pub fn magnitude(&self) -> f64 {
+    pub fn mag(&self) -> f64 {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }
 
-    pub fn normalize(&self) -> Self {
-        let mag = self.magnitude();
-        vector(self.x / mag, self.y / mag, self.z / mag)
+    pub fn norm(&self) -> Self {
+        let mag = self.mag();
+        Vector {
+            x: self.x / mag,
+            y: self.y / mag,
+            z: self.z / mag,
+        }
     }
 
     pub fn dot(&self, other: Self) -> f64 {
@@ -23,11 +48,11 @@ impl Vector {
     }
 
     pub fn cross(&self, other: Self) -> Self {
-        vector(
-            self.y * other.z - self.z * other.y,
-            self.z * other.x - self.x * other.z,
-            self.x * other.y - self.y * other.x,
-        )
+        Vector {
+            x: self.y * other.z - self.z * other.y,
+            y: self.z * other.x - self.x * other.z,
+            z: self.x * other.y - self.y * other.x,
+        }
     }
 }
 
@@ -37,7 +62,7 @@ impl PartialEq for Vector {
     }
 }
 
-impl Add for Vector {
+impl std::ops::Add for Vector {
     type Output = Self;
 
     fn add(self, other: Self) -> Self::Output {
@@ -49,19 +74,15 @@ impl Add for Vector {
     }
 }
 
-impl Add<Point> for Vector {
+impl std::ops::Add<Point> for Vector {
     type Output = Point;
 
     fn add(self, point: Point) -> Self::Output {
-        Point {
-            x: self.x + point.x,
-            y: self.y + point.y,
-            z: self.z + point.z,
-        }
+        point::new(self.x + point.x(), self.y + point.y(), self.z + point.z())
     }
 }
 
-impl Sub for Vector {
+impl std::ops::Sub for Vector {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self::Output {
@@ -73,7 +94,7 @@ impl Sub for Vector {
     }
 }
 
-impl Neg for Vector {
+impl std::ops::Neg for Vector {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
@@ -85,7 +106,7 @@ impl Neg for Vector {
     }
 }
 
-impl<T> Mul<T> for Vector
+impl<T> std::ops::Mul<T> for Vector
 where
     T: Into<f64>,
 {
@@ -101,7 +122,7 @@ where
     }
 }
 
-impl<T> Div<T> for Vector
+impl<T> std::ops::Div<T> for Vector
 where
     T: Into<f64>,
 {
@@ -114,13 +135,5 @@ where
             y: self.y / val,
             z: self.z / val,
         }
-    }
-}
-
-pub fn vector<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(x: T1, y: T2, z: T3) -> Vector {
-    Vector {
-        x: x.into(),
-        y: y.into(),
-        z: z.into(),
     }
 }

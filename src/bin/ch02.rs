@@ -18,24 +18,24 @@ fn tick(env: &Environment, proj: &Projectile) -> Projectile {
 }
 
 fn main() {
-    let start = point(0, 1, 0);
-    let velocity = vector(1, 1.8, 0).normalize() * 11.25;
+    let start = point::new(0, 1, 0);
+    let velocity = vector::new(1, 1.8, 0).norm() * 11.25;
 
     let mut p = Projectile {
         position: start,
         velocity,
     };
-    let gravity = vector(0, -0.1, 0);
-    let wind = vector(-0.01, 0, 0);
+    let gravity = vector::new(0, -0.1, 0);
+    let wind = vector::new(-0.01, 0, 0);
 
     let e = Environment { gravity, wind };
 
-    let color = color(1.0, 0.0, 0.0);
-    let mut canvas = canvas(900, 550);
+    let color = color::new(1.0, 0.0, 0.0);
+    let mut canvas = canvas::new(900, 550);
 
-    while p.position.y > 0.0 {
-        let x = p.position.x.round() as usize;
-        let y = canvas.height() - (p.position.y.round() as usize);
+    while p.position.y() > 0.0 {
+        let x = p.position.x().round() as usize;
+        let y = canvas.height() - (p.position.y().round() as usize);
         if x < canvas.width() || y < canvas.height() {
             canvas.set(x, y, color);
             if x as i32 > 0 {
@@ -53,7 +53,7 @@ fn main() {
         } else {
             println!(
                 "position out of bounds: px{} py{} (x: {} y: {})",
-                p.position.x, p.position.y, x, y
+                p.position.x(), p.position.y(), x, y
             )
         }
         p = tick(&e, &p);

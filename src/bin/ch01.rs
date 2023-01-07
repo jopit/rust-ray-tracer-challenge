@@ -19,17 +19,17 @@ fn tick(env: &Environment, proj: &Projectile) -> Projectile {
 
 fn main() {
     let mut p = Projectile {
-        position: point(0, 1, 0),
-        velocity: vector(1, 1, 0).normalize(),
+        position: point::new(0, 1, 0),
+        velocity: vector::new(1, 1, 0).norm(),
     };
 
     let e = Environment {
-        gravity: vector(0, -0.1, 0),
-        wind: vector(-0.01, 0, 0),
+        gravity: vector::new(0, -0.1, 0),
+        wind: vector::new(-0.01, 0, 0),
     };
 
-    while p.position.y >= 0.0 {
+    while p.position.y() >= 0.0 {
         p = tick(&e, &p);
-        println!("x: {:12.8} y: {:12.8}", p.position.x, p.position.y);
+        println!("x: {:12.8} y: {:12.8}", p.position.x(), p.position.y());
     }
 }

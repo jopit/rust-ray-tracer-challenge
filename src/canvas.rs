@@ -1,6 +1,6 @@
 extern crate image;
 
-use crate::color::{Color, BLACK};
+use crate::*;
 use image::{ImageBuffer, ImageResult, RgbImage};
 
 pub struct Canvas {
@@ -9,9 +9,9 @@ pub struct Canvas {
     height: usize,
 }
 
-pub fn canvas(width: usize, height: usize) -> Canvas {
+pub fn new(width: usize, height: usize) -> Canvas {
     Canvas {
-        data: vec![BLACK; width * height],
+        data: vec![color::BLACK; width * height],
         width,
         height,
     }
@@ -37,8 +37,39 @@ impl Canvas {
     pub fn save(&self, path: &str) -> ImageResult<()> {
         let mut image: RgbImage = ImageBuffer::new(self.width as u32, self.height as u32);
         for (col, row, pixel) in image.enumerate_pixels_mut() {
-            *pixel = self.get(col as usize, row as usize).to_rgb()
+            *pixel = self.get(col as usize, row as usize).into()
         }
         image.save(path)
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn creating_a_canvas() {
+        let c = canvas::new(10, 20);
+
+        assert_eq!(c.width(), 10);
+        assert_eq!(c.height(), 20);
+
+        for col in 0..c.width() {
+            for row in 0..c.height() {
+                assert_eq!(c.get(col, row), color::BLACK);
+            }
+        }
+    }
+
+    #[test]
+    fn writing_pixels_to_a_canvas() {
+        let mut c = canvas::new(10, 20);
+        let red = color::new(1, 0, 0);
+
+        c.set(2, 3, red);
+
+        assert_eq!(c.get(2, 3), red);
     }
 }

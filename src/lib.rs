@@ -1,19 +1,22 @@
-mod canvas;
-pub use crate::canvas::{canvas, Canvas};
+pub mod canvas;
+pub use crate::canvas::Canvas;
 
-mod color;
-pub use crate::color::{color, Color};
+pub mod color;
+pub use crate::color::Color;
 
-mod matrix;
+pub mod matrix;
 pub use crate::matrix::{
-    matrix, matrix_sized, rotate_x, rotate_y, rotate_z, scale, scale_u, shear, translate, Matrix,
+    rotate_x, rotate_y, rotate_z, scale, scale_u, shear, translate, Matrix,
 };
 
-mod point;
-pub use crate::point::{point, Point};
+pub mod point;
+pub use crate::point::Point;
 
-mod vector;
-pub use crate::vector::{vector, Vector};
+pub mod tuple;
+pub use crate::tuple::Tuple;
+
+pub mod vector;
+pub use crate::vector::Vector;
 
 const EPSILON: f64 = 0.00001;
 
