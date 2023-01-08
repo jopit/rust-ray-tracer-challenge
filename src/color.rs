@@ -22,11 +22,13 @@ pub struct Color {
     blue: f64,
 }
 
-pub fn new<R: Into<f64>, G: Into<f64>, B: Into<f64>>(red: R, green: G, blue: B) -> Color {
-    Color {
-        red: red.into(),
-        green: green.into(),
-        blue: blue.into(),
+impl Color {
+    pub fn new<R: Into<f64>, G: Into<f64>, B: Into<f64>>(red: R, green: G, blue: B) -> Color {
+        Color {
+            red: red.into(),
+            green: green.into(),
+            blue: blue.into(),
+        }
     }
 }
 
@@ -106,7 +108,7 @@ mod tests {
 
     #[test]
     fn colors_are_red_green_blue_tuples() {
-        let c = color::new(-0.5, 0.4, 1.7);
+        let c = Color::new(-0.5, 0.4, 1.7);
         assert_eq!(c.red, -0.5);
         assert_eq!(c.green, 0.4);
         assert_eq!(c.blue, 1.7);
@@ -114,29 +116,29 @@ mod tests {
 
     #[test]
     fn adding_colors() {
-        let c1 = color::new(0.9, 0.6, 0.75);
-        let c2 = color::new(0.7, 0.1, 0.25);
-        assert_eq!(c1 + c2, color::new(1.6, 0.7, 1.0));
+        let c1 = Color::new(0.9, 0.6, 0.75);
+        let c2 = Color::new(0.7, 0.1, 0.25);
+        assert_eq!(c1 + c2, Color::new(1.6, 0.7, 1.0));
     }
 
     #[test]
     fn substracting_colors() {
-        let c1 = color::new(0.9, 0.6, 0.75);
-        let c2 = color::new(0.7, 0.1, 0.25);
-        assert_eq!(c1 - c2, color::new(0.2, 0.5, 0.5));
+        let c1 = Color::new(0.9, 0.6, 0.75);
+        let c2 = Color::new(0.7, 0.1, 0.25);
+        assert_eq!(c1 - c2, Color::new(0.2, 0.5, 0.5));
     }
 
     #[test]
     fn multiplying_a_color_by_a_scalar() {
-        let c = color::new(0.2, 0.3, 0.4);
-        assert_eq!(c * 2, color::new(0.4, 0.6, 0.8));
+        let c = Color::new(0.2, 0.3, 0.4);
+        assert_eq!(c * 2, Color::new(0.4, 0.6, 0.8));
     }
 
     #[test]
     fn multiplying_colors() {
-        let c1 = color::new(1, 0.2, 0.4);
-        let c2 = color::new(0.9, 1, 0.1);
-        assert_eq!(c1 * c2, color::new(0.9, 0.2, 0.04));
+        let c1 = Color::new(1, 0.2, 0.4);
+        let c2 = Color::new(0.9, 1, 0.1);
+        assert_eq!(c1 * c2, Color::new(0.9, 0.2, 0.04));
         assert_eq!(c1.red, 1.0);
     }
 }

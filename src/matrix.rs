@@ -1,147 +1,38 @@
-use crate::{feq, point, vector, Point, Tuple, Vector};
+use crate::{feq, Point, Tuple, Vector};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Matrix {
     data: [[f64; 4]; 4],
     size: usize,
 }
-
-pub fn new() -> Matrix {
-    Matrix {
-        data: [
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ],
-        size: 4,
-    }
-}
-
-fn new_sized(size: usize) -> Matrix {
-    debug_assert!(size < 5);
-    Matrix {
-        data: [
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ],
-        size,
-    }
-}
-
-pub fn translate<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(x: T1, y: T2, z: T3) -> Matrix {
-    Matrix {
-        data: [
-            [1.0, 0.0, 0.0, x.into()],
-            [0.0, 1.0, 0.0, y.into()],
-            [0.0, 0.0, 1.0, z.into()],
-            [0.0, 0.0, 0.0, 1.0],
-        ],
-        size: 4,
-    }
-}
-
-pub fn scale<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(x: T1, y: T2, z: T3) -> Matrix {
-    Matrix {
-        data: [
-            [x.into(), 0.0, 0.0, 0.0],
-            [0.0, y.into(), 0.0, 0.0],
-            [0.0, 0.0, z.into(), 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ],
-        size: 4,
-    }
-}
-
-pub fn scale_u<T: Into<f64>>(s: T) -> Matrix {
-    let val = s.into();
-    Matrix {
-        data: [
-            [val, 0.0, 0.0, 0.0],
-            [0.0, val, 0.0, 0.0],
-            [0.0, 0.0, val, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ],
-        size: 4,
-    }
-}
-
-pub fn rotate_x<T: Into<f64>>(radians: T) -> Matrix {
-    let r = radians.into();
-    let cosr = r.cos();
-    let sinr = r.sin();
-    Matrix {
-        data: [
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, cosr, -sinr, 0.0],
-            [0.0, sinr, cosr, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ],
-        size: 4,
-    }
-}
-
-pub fn rotate_y<T: Into<f64>>(radians: T) -> Matrix {
-    let r = radians.into();
-    let cosr = r.cos();
-    let sinr = r.sin();
-    Matrix {
-        data: [
-            [cosr, 0.0, sinr, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [-sinr, 0.0, cosr, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ],
-        size: 4,
-    }
-}
-
-pub fn rotate_z<T: Into<f64>>(radians: T) -> Matrix {
-    let r = radians.into();
-    let cosr = r.cos();
-    let sinr = r.sin();
-    Matrix {
-        data: [
-            [cosr, -sinr, 0.0, 0.0],
-            [sinr, cosr, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ],
-        size: 4,
-    }
-}
-
-pub fn shear<
-    T1: Into<f64>,
-    T2: Into<f64>,
-    T3: Into<f64>,
-    T4: Into<f64>,
-    T5: Into<f64>,
-    T6: Into<f64>,
->(
-    xy: T1,
-    xz: T2,
-    yx: T3,
-    yz: T4,
-    zx: T5,
-    zy: T6,
-) -> Matrix {
-    Matrix {
-        data: [
-            [1.0, xy.into(), xz.into(), 0.0],
-            [yx.into(), 1.0, yz.into(), 0.0],
-            [zx.into(), zy.into(), 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ],
-        size: 4,
-    }
-}
-
 impl Matrix {
+    pub fn new() -> Matrix {
+        Matrix {
+            data: [
+                [1.0, 0.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+            size: 4,
+        }
+    }
+
+    fn new_sized(size: usize) -> Matrix {
+        debug_assert!(size < 5);
+        Matrix {
+            data: [
+                [1.0, 0.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+            size,
+        }
+    }
+
     pub fn transpose(&self) -> Matrix {
-        let mut result = new_sized(self.size);
+        let mut result = Matrix::new_sized(self.size);
         for row in 0..self.size {
             for col in 0..self.size {
                 result.data[col][row] = self.data[row][col];
@@ -163,7 +54,7 @@ impl Matrix {
     }
 
     fn submatrix(&self, row: usize, col: usize) -> Matrix {
-        let mut result = new_sized(self.size - 1);
+        let mut result = Matrix::new_sized(self.size - 1);
 
         for r in 0..self.size {
             if r == row {
@@ -204,7 +95,7 @@ impl Matrix {
         // then transpose that matrix of cofactors
         // then divide each element by the determinant of the original matrix
         let det = self.determinant();
-        let mut m2 = new_sized(self.size);
+        let mut m2 = Matrix::new_sized(self.size);
         for row in 0..self.size {
             for col in 0..self.size {
                 let c = self.cofactor(row, col);
@@ -223,7 +114,15 @@ impl Matrix {
         y: T2,
         z: T3,
     ) -> Matrix {
-        translate(x, y, z) * *self
+        Matrix {
+            data: [
+                [1.0, 0.0, 0.0, x.into()],
+                [0.0, 1.0, 0.0, y.into()],
+                [0.0, 0.0, 1.0, z.into()],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+            size: 4,
+        } * *self
     }
 
     pub fn scale<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(
@@ -232,23 +131,73 @@ impl Matrix {
         y: T2,
         z: T3,
     ) -> Matrix {
-        scale(x, y, z) * *self
+        Matrix {
+            data: [
+                [x.into(), 0.0, 0.0, 0.0],
+                [0.0, y.into(), 0.0, 0.0],
+                [0.0, 0.0, z.into(), 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+            size: 4,
+        } * *self
     }
 
     pub fn scale_u<T: Into<f64>>(&self, s: T) -> Matrix {
-        scale_u(s) * *self
+        let val = s.into();
+        Matrix {
+            data: [
+                [val, 0.0, 0.0, 0.0],
+                [0.0, val, 0.0, 0.0],
+                [0.0, 0.0, val, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+            size: 4,
+        } * *self
     }
 
     pub fn rotate_x<T: Into<f64>>(&self, radians: T) -> Matrix {
-        rotate_x(radians) * *self
+        let r = radians.into();
+        let cosr = r.cos();
+        let sinr = r.sin();
+        Matrix {
+            data: [
+                [1.0, 0.0, 0.0, 0.0],
+                [0.0, cosr, -sinr, 0.0],
+                [0.0, sinr, cosr, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+            size: 4,
+        } * *self
     }
 
     pub fn rotate_y<T: Into<f64>>(&self, radians: T) -> Matrix {
-        rotate_y(radians) * *self
+        let r = radians.into();
+        let cosr = r.cos();
+        let sinr = r.sin();
+        Matrix {
+            data: [
+                [cosr, 0.0, sinr, 0.0],
+                [0.0, 1.0, 0.0, 0.0],
+                [-sinr, 0.0, cosr, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+            size: 4,
+        } * *self
     }
 
     pub fn rotate_z<T: Into<f64>>(&self, radians: T) -> Matrix {
-        rotate_z(radians) * *self
+        let r = radians.into();
+        let cosr = r.cos();
+        let sinr = r.sin();
+        Matrix {
+            data: [
+                [cosr, -sinr, 0.0, 0.0],
+                [sinr, cosr, 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+            size: 4,
+        } * *self
     }
 
     pub fn shear<
@@ -267,7 +216,21 @@ impl Matrix {
         zx: T5,
         zy: T6,
     ) -> Matrix {
-        shear(xy, xz, yx, yz, zx, zy) * *self
+        Matrix {
+            data: [
+                [1.0, xy.into(), xz.into(), 0.0],
+                [yx.into(), 1.0, yz.into(), 0.0],
+                [zx.into(), zy.into(), 1.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+            size: 4,
+        } * *self
+    }
+}
+
+impl Default for Matrix {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -305,7 +268,7 @@ impl std::ops::Mul for Matrix {
         );
         debug_assert!(self.size == 4, "can only multiply 4x4 matrices");
 
-        let mut result = new();
+        let mut result = Matrix::new();
         for row in 0..4 {
             for col in 0..4 {
                 result.data[row][col] = self.data[row][0] * rhs.data[0][col]
@@ -326,7 +289,7 @@ impl std::ops::Mul<Vector> for Matrix {
         debug_assert!(self.size == 4, "can only multiply a 4x4 matrix by a vector",);
 
         let dot = |row: [f64; 4]| row[0] * rhs.x() + row[1] * rhs.y() + row[2] * rhs.z();
-        vector::new(dot(self.data[0]), dot(self.data[1]), dot(self.data[2]))
+        Vector::new(dot(self.data[0]), dot(self.data[1]), dot(self.data[2]))
     }
 }
 
@@ -337,7 +300,7 @@ impl std::ops::Mul<Point> for Matrix {
         debug_assert!(self.size == 4, "can only multiply a 4x4 matrix by a point",);
 
         let dot = |row: [f64; 4]| row[0] * rhs.x() + row[1] * rhs.y() + row[2] * rhs.z() + row[3];
-        point::new(dot(self.data[0]), dot(self.data[1]), dot(self.data[2]))
+        Point::new(dot(self.data[0]), dot(self.data[1]), dot(self.data[2]))
     }
 }
 
@@ -351,7 +314,7 @@ mod tests {
         let trim_chars: &[_] = &[' ', '\t', '|'];
 
         let lines: Vec<_> = spec.trim().lines().collect();
-        let mut result = matrix::new_sized(lines.len());
+        let mut result = Matrix::new_sized(lines.len());
 
         for (row, line) in spec.trim().lines().enumerate() {
             let fields: Vec<_> = line.trim_matches(trim_chars).split('|').collect();
@@ -511,9 +474,9 @@ mod tests {
             | 0 | 0 | 0 | 1 |
             ",
         );
-        let v = vector::new(1, 2, 3);
+        let v = Vector::new(1, 2, 3);
 
-        assert_eq!(a * v, vector::new(14, 22, 32));
+        assert_eq!(a * v, Vector::new(14, 22, 32));
     }
 
     #[test]
@@ -526,9 +489,9 @@ mod tests {
             | 0 | 0 | 0 | 1 |
             ",
         );
-        let p = point::new(1, 2, 3);
+        let p = Point::new(1, 2, 3);
 
-        assert_eq!(a * p, point::new(18, 24, 33));
+        assert_eq!(a * p, Point::new(18, 24, 33));
     }
 
     #[test]
@@ -541,7 +504,7 @@ mod tests {
             | 4 | 8 | 16 | 32 |
             ",
         );
-        let ident = matrix::new();
+        let ident = Matrix::new();
 
         assert_eq!(ident * a, a);
         assert_eq!(a * ident, a);
@@ -549,18 +512,18 @@ mod tests {
 
     #[test]
     fn multiplying_the_identity_matrix_by_a_vector() {
-        let ident = matrix::new();
-        let v = vector::new(1, 2, 3);
+        let ident = Matrix::new();
+        let v = Vector::new(1, 2, 3);
 
-        assert_eq!(ident * v, vector::new(1, 2, 3))
+        assert_eq!(ident * v, Vector::new(1, 2, 3))
     }
 
     #[test]
     fn multiplying_the_identity_matrix_by_a_point() {
-        let ident = matrix::new();
-        let p = point::new(1, 2, 3);
+        let ident = Matrix::new();
+        let p = Point::new(1, 2, 3);
 
-        assert_eq!(ident * p, point::new(1, 2, 3))
+        assert_eq!(ident * p, Point::new(1, 2, 3))
     }
 
     #[test]
@@ -588,8 +551,8 @@ mod tests {
 
     #[test]
     fn transposing_the_identity_matrix() {
-        let a = matrix::new().transpose();
-        assert_eq!(a, matrix::new());
+        let a = Matrix::new().transpose();
+        assert_eq!(a, Matrix::new());
     }
 
     #[test]

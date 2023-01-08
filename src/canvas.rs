@@ -9,15 +9,15 @@ pub struct Canvas {
     height: usize,
 }
 
-pub fn new(width: usize, height: usize) -> Canvas {
-    Canvas {
-        data: vec![color::BLACK; width * height],
-        width,
-        height,
-    }
-}
-
 impl Canvas {
+    pub fn new(width: usize, height: usize) -> Canvas {
+        Canvas {
+            data: vec![color::BLACK; width * height],
+            width,
+            height,
+        }
+    }
+
     pub fn width(&self) -> usize {
         self.width
     }
@@ -48,10 +48,10 @@ impl Canvas {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn creating_a_canvas() {
-        let c = canvas::new(10, 20);
+        let c = Canvas::new(10, 20);
 
         assert_eq!(c.width(), 10);
         assert_eq!(c.height(), 20);
@@ -65,8 +65,8 @@ mod tests {
 
     #[test]
     fn writing_pixels_to_a_canvas() {
-        let mut c = canvas::new(10, 20);
-        let red = color::new(1, 0, 0);
+        let mut c = Canvas::new(10, 20);
+        let red = Color::new(1, 0, 0);
 
         c.set(2, 3, red);
 

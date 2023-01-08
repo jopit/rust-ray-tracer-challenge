@@ -7,18 +7,18 @@ fn main() {
     let height = width;
 
     let radius = width * (3.0 / 8.0);
-    let center = point::new(width / 2.0, 0.0, height / 2.0);
+    let center = Point::new(width / 2.0, 0.0, height / 2.0);
 
-    let white = color::new(1.0, 1.0, 1.0);
-    let red = color::new(1.0, 0.0, 0.0);
+    let white = Color::new(1.0, 1.0, 1.0);
+    let red = Color::new(1.0, 0.0, 0.0);
 
     let angle = PI / 6.0;
-    let twelve = point::new(0, 0, 1);
-    let transform = scale(radius, 1.0, radius).translate(center.x(), center.y(), center.z());
+    let twelve = Point::new(0, 0, 1);
+    let transform = Matrix::new().scale(radius, 1.0, radius).translate(center.x(), center.y(), center.z());
 
-    let mut canvas = canvas::new(width as usize, height as usize);
+    let mut canvas = Canvas::new(width as usize, height as usize);
     for hour in 0..12 {
-        let point = (transform * rotate_y((hour as f64) * angle)) * twelve;
+        let point = (transform * Matrix::new().rotate_y((hour as f64) * angle)) * twelve;
         let color = if hour == 0 || hour == 3 { red } else { white };
 
         let x = point.x() as usize;

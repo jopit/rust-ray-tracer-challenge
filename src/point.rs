@@ -1,10 +1,20 @@
-use crate::{feq, vector, Tuple, Vector};
+use crate::{feq, Tuple, Vector};
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Point {
     x: f64,
     y: f64,
     z: f64,
+}
+
+impl Point {
+    pub fn new<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(x: T1, y: T2, z: T3) -> Point {
+        Point {
+            x: x.into(),
+            y: y.into(),
+            z: z.into(),
+        }
+    }
 }
 
 impl Tuple for Point {
@@ -43,7 +53,7 @@ impl std::ops::Sub for Point {
     type Output = Vector;
 
     fn sub(self, other: Self) -> Self::Output {
-        vector::new(self.x - other.x, self.y - other.y, self.z - other.z)
+        Vector::new(self.x - other.x, self.y - other.y, self.z - other.z)
     }
 }
 
@@ -56,13 +66,5 @@ impl std::ops::Sub<Vector> for Point {
             y: self.y - other.y(),
             z: self.z - other.z(),
         }
-    }
-}
-
-pub fn new<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(x: T1, y: T2, z: T3) -> Point {
-    Point {
-        x: x.into(),
-        y: y.into(),
-        z: z.into(),
     }
 }
