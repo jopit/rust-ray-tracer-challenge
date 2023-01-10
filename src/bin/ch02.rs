@@ -1,4 +1,5 @@
-use ray_tracer::*;
+use ray_tracer::geometry::*;
+use ray_tracer::raytracer::*;
 
 struct Projectile {
     position: Point,
@@ -53,7 +54,10 @@ fn main() {
         } else {
             println!(
                 "position out of bounds: px{} py{} (x: {} y: {})",
-                p.position.x(), p.position.y(), x, y
+                p.position.x(),
+                p.position.y(),
+                x,
+                y
             )
         }
         p = tick(&e, &p);

@@ -1,6 +1,6 @@
 use std::f64::consts::{PI, SQRT_2};
 
-use ray_tracer::*;
+use ray_tracer::geometry::*;
 
 #[test]
 fn multiplying_by_a_translation_matrix() {

@@ -8,7 +8,7 @@ pub trait Tuple {
 
 #[cfg(test)]
 mod tests {
-    use crate::*;
+    use crate::geometry::*;
 
     #[test]
     fn creating_a_point() {

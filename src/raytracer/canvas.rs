@@ -1,6 +1,6 @@
 extern crate image;
 
-use crate::*;
+use crate::raytracer::{color, Color};
 use image::{ImageBuffer, ImageResult, RgbImage};
 
 pub struct Canvas {
@@ -66,7 +66,7 @@ mod tests {
     #[test]
     fn writing_pixels_to_a_canvas() {
         let mut c = Canvas::new(10, 20);
-        let red = Color::new(1, 0, 0);
+        let red = Color::new(1.0, 0.0, 0.0);
 
         c.set(2, 3, red);
 

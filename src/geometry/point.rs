@@ -1,4 +1,5 @@
-use crate::{feq, Tuple, Vector};
+use crate::feq;
+use crate::geometry::{Tuple, Vector};
 
 #[derive(Debug, Default, Copy, Clone)]
 pub struct Point {

@@ -1,4 +1,4 @@
-use ray_tracer::*;
+use ray_tracer::geometry::*;
 
 struct Projectile {
     position: Point,

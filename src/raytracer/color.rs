@@ -23,12 +23,8 @@ pub struct Color {
 }
 
 impl Color {
-    pub fn new<R: Into<f64>, G: Into<f64>, B: Into<f64>>(red: R, green: G, blue: B) -> Color {
-        Color {
-            red: red.into(),
-            green: green.into(),
-            blue: blue.into(),
-        }
+    pub fn new(red: f64, green: f64, blue: f64) -> Color {
+        Color { red, green, blue }
     }
 }
 
@@ -39,6 +35,12 @@ impl From<Color> for Rgb<u8> {
             (value.green.clamp(0.0, 1.0) * 255.0) as u8,
             (value.blue.clamp(0.0, 1.0) * 255.0) as u8,
         ])
+    }
+}
+
+impl Default for Color {
+    fn default() -> Self {
+        BLACK
     }
 }
 
@@ -104,7 +106,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::*;
+    use super::*;
 
     #[test]
     fn colors_are_red_green_blue_tuples() {
@@ -136,8 +138,8 @@ mod tests {
 
     #[test]
     fn multiplying_colors() {
-        let c1 = Color::new(1, 0.2, 0.4);
-        let c2 = Color::new(0.9, 1, 0.1);
+        let c1 = Color::new(1.0, 0.2, 0.4);
+        let c2 = Color::new(0.9, 1.0, 0.1);
         assert_eq!(c1 * c2, Color::new(0.9, 0.2, 0.04));
         assert_eq!(c1.red, 1.0);
     }

@@ -1,4 +1,5 @@
-use crate::{feq, Point, Tuple};
+use crate::feq;
+use crate::geometry::{Point, Tuple};
 
 #[derive(Debug, Default, Copy, Clone)]
 pub struct Vector {
@@ -29,7 +30,7 @@ impl Vector {
             z: z.into(),
         }
     }
-    
+
     pub fn mag(&self) -> f64 {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }

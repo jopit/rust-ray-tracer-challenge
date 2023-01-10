@@ -1,20 +1,35 @@
-pub mod canvas;
-pub use crate::canvas::Canvas;
+pub mod geometry {
+    mod matrix;
+    pub use matrix::Matrix;
 
-pub mod color;
-pub use crate::color::Color;
+    mod point;
+    pub use point::Point;
 
-pub mod matrix;
-pub use crate::matrix::Matrix;
+    mod tuple;
+    pub use tuple::Tuple;
 
-pub mod point;
-pub use crate::point::Point;
+    mod vector;
+    pub use vector::Vector;
+}
 
-pub mod tuple;
-pub use crate::tuple::Tuple;
+pub mod raytracer {
+    mod canvas;
+    pub use canvas::Canvas;
 
-pub mod vector;
-pub use crate::vector::Vector;
+    pub mod color;
+    pub use color::Color;
+
+    mod intersection;
+    pub use intersection::{Intersection, Intersections};
+
+    mod ray;
+    pub use ray::Ray;
+}
+
+pub mod shape {
+    mod sphere;
+    pub use sphere::Sphere;
+}
 
 const EPSILON: f64 = 0.00001;
 

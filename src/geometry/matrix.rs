@@ -1,4 +1,5 @@
-use crate::{feq, Point, Tuple, Vector};
+use crate::feq;
+use crate::geometry::{Point, Tuple, Vector};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Matrix {
@@ -18,7 +19,7 @@ impl Matrix {
         }
     }
 
-    fn new_sized(size: usize) -> Matrix {
+    fn with_size(size: usize) -> Matrix {
         debug_assert!(size < 5);
         Matrix {
             data: [
@@ -32,7 +33,7 @@ impl Matrix {
     }
 
     pub fn transpose(&self) -> Matrix {
-        let mut result = Matrix::new_sized(self.size);
+        let mut result = Matrix::with_size(self.size);
         for row in 0..self.size {
             for col in 0..self.size {
                 result.data[col][row] = self.data[row][col];
@@ -54,7 +55,7 @@ impl Matrix {
     }
 
     fn submatrix(&self, row: usize, col: usize) -> Matrix {
-        let mut result = Matrix::new_sized(self.size - 1);
+        let mut result = Matrix::with_size(self.size - 1);
 
         for r in 0..self.size {
             if r == row {
@@ -95,7 +96,7 @@ impl Matrix {
         // then transpose that matrix of cofactors
         // then divide each element by the determinant of the original matrix
         let det = self.determinant();
-        let mut m2 = Matrix::new_sized(self.size);
+        let mut m2 = Matrix::with_size(self.size);
         for row in 0..self.size {
             for col in 0..self.size {
                 let c = self.cofactor(row, col);
@@ -308,13 +309,13 @@ impl std::ops::Mul<Point> for Matrix {
 
 #[cfg(test)]
 mod tests {
-    use crate::*;
+    use crate::geometry::*;
 
     fn matrix_from_str(spec: &str) -> Matrix {
         let trim_chars: &[_] = &[' ', '\t', '|'];
 
         let lines: Vec<_> = spec.trim().lines().collect();
-        let mut result = Matrix::new_sized(lines.len());
+        let mut result = Matrix::with_size(lines.len());
 
         for (row, line) in spec.trim().lines().enumerate() {
             let fields: Vec<_> = line.trim_matches(trim_chars).split('|').collect();

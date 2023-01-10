@@ -1,6 +1,7 @@
 use std::f64::consts::PI;
 
-use ray_tracer::*;
+use ray_tracer::geometry::*;
+use ray_tracer::raytracer::*;
 
 fn main() {
     let width = 1024.0;
@@ -14,7 +15,10 @@ fn main() {
 
     let angle = PI / 6.0;
     let twelve = Point::new(0, 0, 1);
-    let transform = Matrix::new().scale(radius, 1.0, radius).translate(center.x(), center.y(), center.z());
+    let transform =
+        Matrix::new()
+            .scale(radius, 1.0, radius)
+            .translate(center.x(), center.y(), center.z());
 
     let mut canvas = Canvas::new(width as usize, height as usize);
     for hour in 0..12 {

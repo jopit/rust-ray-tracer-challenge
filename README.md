@@ -9,3 +9,6 @@ See: https://pragprog.com/titles/jbtracer/the-ray-tracer-challenge/
 
 ## Chapter 4: Matrix Transformations
 ![Clock](images/ch04.png)
+
+## Chapter 5: Ray-Sphere Intersections
+![Sphere Shadow](images/ch05.png)
