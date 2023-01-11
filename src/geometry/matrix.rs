@@ -317,12 +317,12 @@ mod tests {
         let lines: Vec<_> = spec.trim().lines().collect();
         let mut result = Matrix::with_size(lines.len());
 
-        for (row, line) in spec.trim().lines().enumerate() {
-            let fields: Vec<_> = line.trim_matches(trim_chars).split('|').collect();
-            for (col, num) in fields.iter().enumerate() {
-                let val = match (*num).trim().parse::<f64>() {
+        for (row, line) in lines.iter().enumerate() {
+            let fields = line.trim_matches(trim_chars).split('|');
+            for (col, num) in fields.enumerate() {
+                let val = match num.trim().parse::<f64>() {
                     Ok(x) => x,
-                    Err(_) => panic!("error parsing value as f64: \"{}\"\n", (*num)),
+                    Err(_) => panic!("error parsing value as f64: \"{}\"\n", num),
                 };
                 result.data[row][col] = val;
             }
