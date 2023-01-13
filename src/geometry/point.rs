@@ -8,6 +8,12 @@ pub struct Point {
     z: f64,
 }
 
+pub const ORIGIN: Point = Point {
+    x: 0.0,
+    y: 0.0,
+    z: 0.0,
+};
+
 impl Point {
     pub fn new<T1: Into<f64>, T2: Into<f64>, T3: Into<f64>>(x: T1, y: T2, z: T3) -> Point {
         Point {

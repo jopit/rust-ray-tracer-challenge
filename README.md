@@ -12,3 +12,6 @@ See: https://pragprog.com/titles/jbtracer/the-ray-tracer-challenge/
 
 ## Chapter 5: Ray-Sphere Intersections
 ![Sphere Shadow](images/ch05.png)
+
+## Chapter 6: Light and Shading
+![Shaded Sphere](images/ch06.png)

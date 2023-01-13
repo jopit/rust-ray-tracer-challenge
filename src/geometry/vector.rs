@@ -55,6 +55,10 @@ impl Vector {
             z: self.x * other.y - self.y * other.x,
         }
     }
+
+    pub fn reflect(&self, normal: Self) -> Self {
+        *self - normal * 2.0 * self.dot(normal)
+    }
 }
 
 impl PartialEq for Vector {

@@ -38,7 +38,7 @@ impl<'a> Intersections<'a> {
         Intersections { xs: vec![] }
     }
 
-    pub fn with(xs: Vec<Intersection<'a>>) -> Self {
+    pub fn from(xs: Vec<Intersection<'a>>) -> Self {
         Intersections { xs }
     }
 
@@ -94,7 +94,7 @@ mod tests {
         let i1 = Intersection::new(1, &s);
         let i2 = Intersection::new(2, &s);
 
-        let xs = Intersections::with(vec![i1, i2]);
+        let xs = Intersections::from(vec![i1, i2]);
 
         assert_eq!(xs.len(), 2);
         assert_eq!(xs[0].t(), 1.0);
@@ -106,7 +106,7 @@ mod tests {
         let s = Sphere::new();
         let i1 = Intersection::new(1, &s);
         let i2 = Intersection::new(2, &s);
-        let xs = Intersections::with(vec![i1, i2]);
+        let xs = Intersections::from(vec![i1, i2]);
 
         let i = xs.hit().unwrap();
 
@@ -118,7 +118,7 @@ mod tests {
         let s = Sphere::new();
         let i1 = Intersection::new(-1, &s);
         let i2 = Intersection::new(1, &s);
-        let xs = Intersections::with(vec![i2, i1]);
+        let xs = Intersections::from(vec![i2, i1]);
 
         let i = xs.hit().unwrap();
 
@@ -130,7 +130,7 @@ mod tests {
         let s = Sphere::new();
         let i1 = Intersection::new(-2, &s);
         let i2 = Intersection::new(-1, &s);
-        let xs = Intersections::with(vec![i2, i1]);
+        let xs = Intersections::from(vec![i2, i1]);
 
         let i = xs.hit();
 
@@ -144,7 +144,7 @@ mod tests {
         let i2 = Intersection::new(7, &s);
         let i3 = Intersection::new(-3, &s);
         let i4 = Intersection::new(2, &s);
-        let mut xs = Intersections::with(vec![i1, i2, i3, i4]);
+        let mut xs = Intersections::from(vec![i1, i2, i3, i4]);
 
         // in this implementation, it's the responsibility of the caller
         // of hit() to ensure the intersections are sorted. Here we test

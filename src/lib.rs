@@ -2,7 +2,7 @@ pub mod geometry {
     mod matrix;
     pub use matrix::Matrix;
 
-    mod point;
+    pub mod point;
     pub use point::Point;
 
     mod tuple;
@@ -21,6 +21,12 @@ pub mod raytracer {
 
     mod intersection;
     pub use intersection::{Intersection, Intersections};
+
+    mod lights;
+    pub use lights::PointLight;
+
+    mod material;
+    pub use material::Material;
 
     mod ray;
     pub use ray::Ray;

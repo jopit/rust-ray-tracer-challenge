@@ -8,6 +8,8 @@ pub trait Tuple {
 
 #[cfg(test)]
 mod tests {
+    use std::f32::consts::SQRT_2;
+
     use crate::geometry::*;
 
     #[test]
@@ -150,5 +152,25 @@ mod tests {
         let b = Vector::new(2, 3, 4);
         assert_eq!(a.cross(b), Vector::new(-1, 2, -1));
         assert_eq!(b.cross(a), Vector::new(1, -2, 1));
+    }
+
+    #[test]
+    fn reflecting_a_vector_approaching_at_45_degrees() {
+        let v = Vector::new(1, -1, 0);
+        let n = Vector::new(0, 1, 0);
+
+        let r = v.reflect(n);
+
+        assert_eq!(r, Vector::new(1, 1, 0));
+    }
+
+    #[test]
+    fn reflecting_a_vector_off_a_slanted_surface() {
+        let v = Vector::new(0, -1, 0);
+        let n = Vector::new(SQRT_2 / 2.0, SQRT_2 / 2.0, 0);
+
+        let r = v.reflect(n);
+
+        assert_eq!(r, Vector::new(1, 0, 0));
     }
 }
