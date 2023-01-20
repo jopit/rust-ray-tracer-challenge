@@ -1,3 +1,5 @@
+use std::ops::{Index, Mul};
+
 use crate::feq;
 use crate::geometry::{Point, Tuple, Vector};
 
@@ -6,6 +8,7 @@ pub struct Matrix {
     data: [[f64; 4]; 4],
     size: usize,
 }
+
 impl Matrix {
     pub fn new() -> Matrix {
         Matrix {
@@ -17,6 +20,10 @@ impl Matrix {
             ],
             size: 4,
         }
+    }
+
+    pub fn with_data(data: [[f64; 4]; 4]) -> Matrix {
+        Matrix { data, size: 4 }
     }
 
     fn with_size(size: usize) -> Matrix {
@@ -235,7 +242,7 @@ impl Default for Matrix {
     }
 }
 
-impl std::ops::Index<(usize, usize)> for Matrix {
+impl Index<(usize, usize)> for Matrix {
     type Output = f64;
 
     fn index(&self, (row, col): (usize, usize)) -> &Self::Output {
@@ -259,7 +266,7 @@ impl PartialEq for Matrix {
     }
 }
 
-impl std::ops::Mul for Matrix {
+impl Mul for Matrix {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
@@ -283,7 +290,7 @@ impl std::ops::Mul for Matrix {
     }
 }
 
-impl std::ops::Mul<Vector> for Matrix {
+impl Mul<Vector> for Matrix {
     type Output = Vector;
 
     fn mul(self, rhs: Vector) -> Self::Output {
@@ -294,7 +301,7 @@ impl std::ops::Mul<Vector> for Matrix {
     }
 }
 
-impl std::ops::Mul<Point> for Matrix {
+impl Mul<Point> for Matrix {
     type Output = Point;
 
     fn mul(self, rhs: Point) -> Self::Output {
@@ -308,10 +315,10 @@ impl std::ops::Mul<Point> for Matrix {
 // -----------------------------------------------------------------------------
 
 #[cfg(test)]
-mod tests {
+pub mod test_utils {
     use crate::geometry::*;
 
-    fn matrix_from_str(spec: &str) -> Matrix {
+    pub fn matrix_from_str(spec: &str) -> Matrix {
         let trim_chars: &[_] = &[' ', '\t', '|'];
 
         let lines: Vec<_> = spec.trim().lines().collect();
@@ -330,6 +337,14 @@ mod tests {
 
         result
     }
+}
+
+// -----------------------------------------------------------------------------
+
+#[cfg(test)]
+mod tests {
+    use super::test_utils::matrix_from_str;
+    use crate::geometry::*;
 
     #[test]
     fn constructing_and_inspecting_a_4x4_matrix() {

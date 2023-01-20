@@ -1,6 +1,6 @@
 # Ray Tracer Challenge
 
-Written in Rust.
+An exercise in learning Rust.
 
 See: https://pragprog.com/titles/jbtracer/the-ray-tracer-challenge/
 
@@ -15,3 +15,6 @@ See: https://pragprog.com/titles/jbtracer/the-ray-tracer-challenge/
 
 ## Chapter 6: Light and Shading
 ![Shaded Sphere](images/ch06.png)
+
+## Chapter 7: Making a Scene
+![Three Spheres](images/ch07.png)

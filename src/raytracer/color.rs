@@ -23,8 +23,12 @@ pub struct Color {
 }
 
 impl Color {
-    pub fn new(red: f64, green: f64, blue: f64) -> Color {
-        Color { red, green, blue }
+    pub fn new<R: Into<f64>, G: Into<f64>, B: Into<f64>>(red: R, green: G, blue: B) -> Color {
+        Color {
+            red: red.into(),
+            green: green.into(),
+            blue: blue.into(),
+        }
     }
 }
 

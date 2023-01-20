@@ -1,7 +1,7 @@
 use crate::geometry::{point, Matrix, Point, Vector};
 use crate::raytracer::{Intersection, Intersections, Material, Ray};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Sphere {
     material: Material,
 
@@ -10,7 +10,7 @@ pub struct Sphere {
     transposed_inverse_transform: Matrix,
 }
 
-impl Sphere {
+impl<'a> Sphere {
     pub fn new() -> Sphere {
         Sphere {
             material: Material::new(),
@@ -20,7 +20,7 @@ impl Sphere {
         }
     }
 
-    pub fn intersect(&self, ray: Ray) -> Intersections {
+    pub fn intersect(&'a self, ray: Ray) -> Intersections<'a> {
         let t_ray = ray.transform(&self.inverse_transform);
 
         // Vector from the sphere's center, to the ray's origin

@@ -1,13 +1,18 @@
-use crate::shape::Sphere;
+use crate::{
+    geometry::{Point, Vector},
+    raytracer::{Color, PointLight, Ray},
+    shape::Shape,
+};
+use std::ops::Index;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Intersection<'a> {
     t: f64,
-    object: &'a Sphere,
+    object: &'a Shape,
 }
 
 impl<'a> Intersection<'a> {
-    pub fn new<T: Into<f64>>(t: T, object: &'a Sphere) -> Intersection<'a> {
+    pub fn new<T: Into<f64>>(t: T, object: &'a Shape) -> Intersection<'a> {
         Intersection {
             t: t.into(),
             object,
@@ -18,16 +23,34 @@ impl<'a> Intersection<'a> {
         self.t
     }
 
-    pub fn object(&self) -> &'a Sphere {
+    pub fn object(&self) -> &'a Shape {
         self.object
+    }
+
+    pub fn compute_state(&self, ray: Ray) -> IntersectionState {
+        let point = ray.position(self.t);
+        let eye_v = -ray.direction();
+        let normal_v = self.object.normal_at(point);
+        let inside = normal_v.dot(eye_v) < 0.0;
+
+        IntersectionState {
+            t: self.t,
+            object: self.object,
+            point,
+            eye_v,
+            normal_v: if inside { -normal_v } else { normal_v },
+            inside,
+        }
     }
 }
 
-impl<'a> std::cmp::PartialEq for Intersection<'a> {
+impl<'a> PartialEq for Intersection<'a> {
     fn eq(&self, other: &Self) -> bool {
         self.t == other.t && std::ptr::eq(self.object, other.object)
     }
 }
+
+// -----------------------------------------------------------------------------
 
 pub struct Intersections<'a> {
     xs: Vec<Intersection<'a>>,
@@ -50,13 +73,17 @@ impl<'a> Intersections<'a> {
         self.xs.is_empty()
     }
 
+    pub fn iter(&self) -> std::slice::Iter<Intersection<'a>> {
+        self.xs.iter()
+    }
+
     pub fn sort(mut self) -> Self {
         self.xs
             .sort_unstable_by(|a, b| a.t.partial_cmp(&b.t).unwrap());
         self
     }
 
-    pub fn hit(&self) -> Option<&Intersection> {
+    pub fn hit(&self) -> Option<&Intersection<'a>> {
         self.xs.iter().find(|it| it.t >= 0.0)
     }
 }
@@ -67,7 +94,7 @@ impl<'a> Default for Intersections<'a> {
     }
 }
 
-impl<'a> std::ops::Index<usize> for Intersections<'a> {
+impl<'a> Index<usize> for Intersections<'a> {
     type Output = Intersection<'a>;
 
     fn index(&self, index: usize) -> &Self::Output {
@@ -75,9 +102,51 @@ impl<'a> std::ops::Index<usize> for Intersections<'a> {
     }
 }
 
+impl<'a> IntoIterator for Intersections<'a> {
+    type Item = Intersection<'a>;
+    type IntoIter = std::vec::IntoIter<Intersection<'a>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.xs.into_iter()
+    }
+}
+
+impl<'a> FromIterator<Intersection<'a>> for Intersections<'a> {
+    fn from_iter<T: IntoIterator<Item = Intersection<'a>>>(iter: T) -> Self {
+        Intersections {
+            xs: iter.into_iter().collect(),
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+pub struct IntersectionState<'a> {
+    t: f64,
+    object: &'a Shape,
+    point: Point,
+    eye_v: Vector,
+    normal_v: Vector,
+    inside: bool,
+}
+impl<'a> IntersectionState<'a> {
+    pub fn lighting(&'a self, light: PointLight) -> Color {
+        self.object
+            .material()
+            .lighting(light, self.point, self.eye_v, self.normal_v)
+    }
+}
+
+// -----------------------------------------------------------------------------
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::{
+        geometry::{Point, Vector},
+        raytracer::Ray,
+        shape::Sphere,
+    };
 
     #[test]
     fn an_intersection_encapsulates_t_and_object() {
@@ -153,5 +222,46 @@ mod tests {
         let i = xs.hit().unwrap();
 
         assert_eq!(*i, i4);
+    }
+
+    #[test]
+    fn precomputing_the_state_of_an_intersection() {
+        let r = Ray::new(Point::new(0, 0, -5), Vector::new(0, 0, 1));
+        let shape = Sphere::new();
+        let i = Intersection::new(4, &shape);
+
+        let comps = i.compute_state(r);
+
+        assert_eq!(comps.t, i.t);
+        assert_eq!(comps.object, i.object);
+        assert_eq!(comps.point, Point::new(0, 0, -1));
+        assert_eq!(comps.eye_v, Vector::new(0, 0, -1));
+        assert_eq!(comps.normal_v, Vector::new(0, 0, -1));
+    }
+
+    #[test]
+    fn the_hit_when_an_intersection_occurs_on_the_outside() {
+        let r = Ray::new(Point::new(0, 0, -5), Vector::new(0, 0, 1));
+        let shape = Sphere::new();
+        let i = Intersection::new(4, &shape);
+
+        let comps = i.compute_state(r);
+
+        assert!(comps.inside == false);
+    }
+
+    #[test]
+    fn the_hit_when_an_intersection_occurs_on_the_inside() {
+        let r = Ray::new(Point::new(0, 0, 0), Vector::new(0, 0, 1));
+        let shape = Sphere::new();
+        let i = Intersection::new(1, &shape);
+
+        let comps = i.compute_state(r);
+
+        assert_eq!(comps.point, Point::new(0, 0, 1));
+        assert_eq!(comps.eye_v, Vector::new(0, 0, -1));
+        assert_eq!(comps.inside, true);
+        // normal would have been (0, 0, 1), but is inverted!
+        assert_eq!(comps.normal_v, Vector::new(0, 0, -1));
     }
 }

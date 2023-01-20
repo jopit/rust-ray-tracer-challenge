@@ -1,5 +1,5 @@
 pub mod geometry {
-    mod matrix;
+    pub mod matrix;
     pub use matrix::Matrix;
 
     pub mod point;
@@ -8,11 +8,17 @@ pub mod geometry {
     mod tuple;
     pub use tuple::Tuple;
 
+    mod transformation;
+    pub use transformation::view_transform;
+
     mod vector;
     pub use vector::Vector;
 }
 
 pub mod raytracer {
+    mod camera;
+    pub use camera::Camera;
+
     mod canvas;
     pub use canvas::Canvas;
 
@@ -20,7 +26,7 @@ pub mod raytracer {
     pub use color::Color;
 
     mod intersection;
-    pub use intersection::{Intersection, Intersections};
+    pub use intersection::{Intersection, IntersectionState, Intersections};
 
     mod lights;
     pub use lights::PointLight;
@@ -30,9 +36,15 @@ pub mod raytracer {
 
     mod ray;
     pub use ray::Ray;
+
+    mod world;
+    pub use world::World;
 }
 
 pub mod shape {
+    mod base;
+    pub use base::Shape;
+
     mod sphere;
     pub use sphere::Sphere;
 }

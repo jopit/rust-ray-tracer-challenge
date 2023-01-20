@@ -47,6 +47,26 @@ impl Material {
         self
     }
 
+    pub fn color(&self) -> Color {
+        self.color
+    }
+
+    pub fn ambient(&self) -> f64 {
+        self.ambient
+    }
+
+    pub fn diffuse(&self) -> f64 {
+        self.diffuse
+    }
+
+    pub fn specular(&self) -> f64 {
+        self.specular
+    }
+
+    pub fn shininess(&self) -> f64 {
+        self.shininess
+    }
+
     pub fn lighting(
         &self,
         light: PointLight,
