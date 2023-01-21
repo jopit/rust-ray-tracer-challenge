@@ -73,6 +73,7 @@ impl Material {
         point: Point,
         eyev: Vector,
         normalv: Vector,
+        in_shadow: bool,
     ) -> Color {
         // combine the surface color with the light's color/intensity
         let effective_color = self.color * light.intensity();
@@ -82,6 +83,11 @@ impl Material {
 
         // compute the ambient contribution
         let ambient = effective_color * self.ambient;
+
+        // ignore diffuse and specular components if in shadow
+        if in_shadow {
+            return ambient;
+        }
 
         // light_dot_normal represents the cosine of the angle between the
         // light vector and the normal vector. A negative number means the
@@ -153,7 +159,7 @@ mod tests {
         let normalv = Vector::new(0, 0, -1);
         let light = PointLight::new(Point::new(0, 0, -10), Color::new(1.0, 1.0, 1.0));
 
-        let result = m.lighting(light, position, eyev, normalv);
+        let result = m.lighting(light, position, eyev, normalv, false);
 
         assert_eq!(result, Color::new(1.9, 1.9, 1.9));
     }
@@ -165,7 +171,7 @@ mod tests {
         let normalv = Vector::new(0, 0, -1);
         let light = PointLight::new(Point::new(0, 0, -10), Color::new(1.0, 1.0, 1.0));
 
-        let result = m.lighting(light, position, eyev, normalv);
+        let result = m.lighting(light, position, eyev, normalv, false);
 
         assert_eq!(result, Color::new(1.0, 1.0, 1.0));
     }
@@ -177,7 +183,7 @@ mod tests {
         let normalv = Vector::new(0, 0, -1);
         let light = PointLight::new(Point::new(0, 10, -10), Color::new(1.0, 1.0, 1.0));
 
-        let result = m.lighting(light, position, eyev, normalv);
+        let result = m.lighting(light, position, eyev, normalv, false);
 
         assert_eq!(result, Color::new(0.7364, 0.7364, 0.7364));
     }
@@ -189,7 +195,7 @@ mod tests {
         let normalv = Vector::new(0, 0, -1);
         let light = PointLight::new(Point::new(0, 10, -10), Color::new(1.0, 1.0, 1.0));
 
-        let result = m.lighting(light, position, eyev, normalv);
+        let result = m.lighting(light, position, eyev, normalv, false);
 
         assert_eq!(result, Color::new(1.6364, 1.6364, 1.6364));
     }
@@ -201,7 +207,20 @@ mod tests {
         let normalv = Vector::new(0, 0, -1);
         let light = PointLight::new(Point::new(0, 0, 10), Color::new(1.0, 1.0, 1.0));
 
-        let result = m.lighting(light, position, eyev, normalv);
+        let result = m.lighting(light, position, eyev, normalv, false);
+
+        assert_eq!(result, Color::new(0.1, 0.1, 0.1));
+    }
+
+    #[test]
+    fn lighting_with_the_surface_in_shadow() {
+        let (m, position) = background();
+        let eyev = Vector::new(0, 0, -1);
+        let normalv = Vector::new(0, 0, -1);
+        let light = PointLight::new(Point::new(0, 0, -10), Color::new(1.0, 1.0, 1.0));
+        let in_shadow = true;
+
+        let result = m.lighting(light, position, eyev, normalv, in_shadow);
 
         assert_eq!(result, Color::new(0.1, 0.1, 0.1));
     }

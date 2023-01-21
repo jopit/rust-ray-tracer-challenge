@@ -18,3 +18,10 @@ See: https://pragprog.com/titles/jbtracer/the-ray-tracer-challenge/
 
 ## Chapter 7: Making a Scene
 ![Three Spheres](images/ch07.png)
+
+## Chapter 8: Shadows
+### One light
+![Shadows from one light](images/ch08.png)
+
+### Two lights
+![Shadows from two lights](images/ch08a.png)

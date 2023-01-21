@@ -1,5 +1,7 @@
 extern crate image;
 
+use std::ops::{Add, Div, Mul, Sub};
+
 use crate::feq;
 use image::Rgb;
 
@@ -54,7 +56,7 @@ impl PartialEq for Color {
     }
 }
 
-impl std::ops::Add for Color {
+impl Add for Color {
     type Output = Self;
 
     fn add(self, other: Self) -> Self::Output {
@@ -66,7 +68,7 @@ impl std::ops::Add for Color {
     }
 }
 
-impl std::ops::Sub for Color {
+impl Sub for Color {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self::Output {
@@ -78,7 +80,7 @@ impl std::ops::Sub for Color {
     }
 }
 
-impl std::ops::Mul for Color {
+impl Mul for Color {
     type Output = Self;
 
     fn mul(self, other: Self) -> Self::Output {
@@ -90,7 +92,7 @@ impl std::ops::Mul for Color {
     }
 }
 
-impl<T> std::ops::Mul<T> for Color
+impl<T> Mul<T> for Color
 where
     T: Into<f64>,
 {
@@ -102,6 +104,22 @@ where
             red: self.red * val,
             green: self.green * val,
             blue: self.blue * val,
+        }
+    }
+}
+
+impl<T> Div<T> for Color
+where
+    T: Into<f64>,
+{
+    type Output = Self;
+
+    fn div(self, scalar: T) -> Self::Output {
+        let val = scalar.into();
+        Color {
+            red: self.red / val,
+            green: self.green / val,
+            blue: self.blue / val,
         }
     }
 }

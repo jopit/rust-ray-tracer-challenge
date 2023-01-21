@@ -2,6 +2,7 @@ use crate::{
     geometry::{Point, Vector},
     raytracer::{Color, PointLight, Ray},
     shape::Shape,
+    EPSILON,
 };
 use std::ops::Index;
 
@@ -32,14 +33,17 @@ impl<'a> Intersection<'a> {
         let eye_v = -ray.direction();
         let normal_v = self.object.normal_at(point);
         let inside = normal_v.dot(eye_v) < 0.0;
+        let normal_v = if inside { -normal_v } else { normal_v };
+        let over_point = point + normal_v * EPSILON;
 
         IntersectionState {
             t: self.t,
             object: self.object,
             point,
             eye_v,
-            normal_v: if inside { -normal_v } else { normal_v },
+            normal_v,
             inside,
+            over_point,
         }
     }
 }
@@ -128,12 +132,18 @@ pub struct IntersectionState<'a> {
     eye_v: Vector,
     normal_v: Vector,
     inside: bool,
+    over_point: Point,
 }
+
 impl<'a> IntersectionState<'a> {
-    pub fn lighting(&'a self, light: PointLight) -> Color {
+    pub fn lighting(&'a self, light: PointLight, in_shadow: bool) -> Color {
         self.object
             .material()
-            .lighting(light, self.point, self.eye_v, self.normal_v)
+            .lighting(light, self.point, self.eye_v, self.normal_v, in_shadow)
+    }
+
+    pub(crate) fn over_point(&self) -> Point {
+        self.over_point
     }
 }
 
@@ -143,9 +153,10 @@ impl<'a> IntersectionState<'a> {
 mod tests {
     use super::*;
     use crate::{
-        geometry::{Point, Vector},
+        geometry::{Matrix, Point, Tuple, Vector},
         raytracer::Ray,
         shape::Sphere,
+        EPSILON,
     };
 
     #[test]
@@ -263,5 +274,17 @@ mod tests {
         assert_eq!(comps.inside, true);
         // normal would have been (0, 0, 1), but is inverted!
         assert_eq!(comps.normal_v, Vector::new(0, 0, -1));
+    }
+
+    #[test]
+    fn the_hit_should_offset_the_point() {
+        let r = Ray::new(Point::new(0, 0, -5), Vector::new(0, 0, 1));
+        let shape = Sphere::new().with_transform(Matrix::new().translate(0, 0, 1));
+        let i = Intersection::new(5, &shape);
+
+        let comps = i.compute_state(r);
+
+        assert!(comps.over_point.z() < -EPSILON / 2.0);
+        assert!(comps.point.z() > comps.over_point.z());
     }
 }
